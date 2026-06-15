@@ -27,6 +27,16 @@ st.info(
 
 vm = st.slider("Cell Membrane Potential (mV)", min_value=-90, max_value=0, value=-70, step=1)
 
+st.caption(
+    "Resting / Stable: -90 to -60 mV   |   Transition / Signaling-sensitive: -60 to -40 mV   |   "
+    "Activated / Plastic: -40 to -20 mV   |   High activation / Stress-remodeling: -20 to 0 mV"
+)
+
+st.markdown(
+    "**Model logic:** membrane potential is converted into ion channel open probability using a "
+    "simplified Boltzmann activation function, then mapped onto conceptual downstream cellular-state predictions."
+)
+
 # Boltzmann curve for voltage-gated channel open probability
 V_half = -40.0   # half-activation voltage (mV)
 k = 6.0          # slope factor (mV)
@@ -42,7 +52,21 @@ st.subheader("Voltage-Gated Channel Activation Curve")
 v_range = np.linspace(-90, 0, 200)
 p_range = 1 / (1 + np.exp(-(v_range - V_half) / k))
 curve_df = pd.DataFrame({"Membrane Potential (mV)": v_range, "Open Probability": p_range})
-st.line_chart(curve_df.set_index("Membrane Potential (mV)"))
+
+import altair as alt
+
+line = (
+    alt.Chart(curve_df)
+    .mark_line(color="#00e0ff")
+    .encode(x="Membrane Potential (mV)", y="Open Probability")
+)
+point_df = pd.DataFrame({"Membrane Potential (mV)": [vm], "Open Probability": [open_prob]})
+point = (
+    alt.Chart(point_df)
+    .mark_circle(color="red", size=100)
+    .encode(x="Membrane Potential (mV)", y="Open Probability")
+)
+st.altair_chart((line + point).properties(height=350), use_container_width=True)
 
 st.markdown(f"Current operating point marked at **Vm = {vm} mV**, open probability = **{open_prob:.3f}**")
 
