@@ -18,6 +18,13 @@ st.markdown(
 st.title("⚡ Bioelectric Control of Epigenetic Expression")
 st.caption("Prototype: Modulating Vm to bypass chemical signaling bottlenecks")
 
+st.info(
+    "This dashboard is a conceptual model exploring how changes in cell membrane potential "
+    "may influence ion channel activity and downstream cellular state, including metabolism, "
+    "methylation status, and regenerative gene expression. All readouts below are conceptual "
+    "predictions, not measured data."
+)
+
 vm = st.slider("Cell Membrane Potential (mV)", min_value=-90, max_value=0, value=-70, step=1)
 
 # Boltzmann curve for voltage-gated channel open probability
@@ -39,7 +46,19 @@ st.line_chart(curve_df.set_index("Membrane Potential (mV)"))
 
 st.markdown(f"Current operating point marked at **Vm = {vm} mV**, open probability = **{open_prob:.3f}**")
 
-st.subheader("Cellular State Readout")
+# Bioelectric state zones
+if vm <= -60:
+    zone_label = "Resting / Stable / Quiescent (-90 to -60 mV)"
+elif vm <= -40:
+    zone_label = "Transition / Signaling-Sensitive (-60 to -40 mV)"
+elif vm <= -20:
+    zone_label = "Activated / Plastic / Remodeling (-40 to -20 mV)"
+else:
+    zone_label = "High Activation / Stress or Regeneration, Context-Dependent (-20 to 0 mV)"
+
+st.markdown(f"**Bioelectric State Zone:** {zone_label}")
+
+st.subheader("Cellular State Readout (Conceptual Predictions)")
 
 if vm <= -60:
     state_data = {
@@ -48,24 +67,24 @@ if vm <= -60:
             "Metabolic Activity",
             "Epigenetic Methylation",
             "TET Enzyme Activity",
-            "Cell Water Structure (Gilbert Ling)",
+            "Cell Water / Cytoplasmic Organization",
             "Regenerative Gene Output",
         ],
         "Status": [
             "Closed / Resting",
             "Standard Maintenance",
-            "Locked / Stable",
-            "Inactive",
-            "High - Structured (EZ Water)",
+            "Associated with Stable / Repressed Expression",
+            "Low Predicted Activity",
+            "High - Structured (Conceptual)",
             "Baseline / Quiescent",
         ],
         "Description": [
-            "Voltage-gated channels remain closed at hyperpolarized resting potential.",
-            "Cell maintains homeostasis with standard ATP turnover.",
-            "DNA methylation patterns remain locked, gene expression suppressed.",
-            "TET demethylation enzymes are not significantly active.",
-            "High degree of exclusion-zone (EZ) water ordering supports stable resting state.",
-            "Regenerative and proliferative gene programs remain dormant.",
+            "Voltage-gated channels are predicted to remain closed at hyperpolarized resting potential.",
+            "Cell is modeled as maintaining homeostasis with standard ATP turnover.",
+            "Conceptual prediction: methylation patterns associated with stable, repressed gene expression.",
+            "Conceptual prediction: TET demethylation enzymes are not strongly active in this regime.",
+            "Conceptual prediction, inspired partly by structured-water and cytoplasmic organization theories.",
+            "Conceptual prediction: may correlate with reduced regenerative signaling.",
         ],
     }
 else:
@@ -75,33 +94,41 @@ else:
             "Metabolic Activity",
             "Epigenetic Methylation",
             "TET Enzyme Activity",
-            "Cell Water Structure (Gilbert Ling)",
+            "Cell Water / Cytoplasmic Organization",
             "Regenerative Gene Output",
         ],
         "Status": [
             "Open / Activated",
             "Elevated / Shifted",
-            "Active Demethylation",
-            "Active",
-            "Reduced Structure - Disordered",
-            "Activated / Upregulated",
+            "Associated with Active Demethylation",
+            "Higher Predicted Activity",
+            "Reduced Structure - Disordered (Conceptual)",
+            "Activated / Upregulated (Conceptual)",
         ],
         "Description": [
-            "Depolarization opens voltage-gated ion channels, allowing ion flux.",
-            "Increased ionic flux drives elevated metabolic and signaling activity.",
-            "Epigenetic methylation marks become dynamically removed.",
-            "TET enzymes actively catalyze demethylation, exposing regulatory regions.",
-            "EZ water structuring is reduced as ionic flux disrupts cell-water organization.",
-            "Regenerative gene programs (e.g. dedifferentiation/proliferation markers) are upregulated.",
+            "Depolarization is predicted to open voltage-gated ion channels, allowing ion flux.",
+            "Increased ionic flux is modeled as driving elevated metabolic and signaling activity.",
+            "Conceptual prediction: methylation marks associated with more dynamic, demethylated states.",
+            "Conceptual prediction: TET enzyme activity may increase, exposing regulatory regions.",
+            "Conceptual prediction, inspired partly by structured-water and cytoplasmic organization theories.",
+            "Conceptual prediction: may correlate with increased regenerative signaling (e.g. dedifferentiation/proliferation markers), depending on context.",
         ],
     }
 
 df = pd.DataFrame(state_data)
 st.dataframe(df, use_container_width=True, hide_index=True)
 
+st.subheader("Why This Matters")
+st.markdown(
+    "The purpose of this prototype is to explore whether bioelectric state could act as an "
+    "upstream control layer that influences gene expression, cellular identity, and regenerative "
+    "potential — and to generate better questions for further research, not to assert settled conclusions."
+)
+
 st.divider()
 st.caption(
     "Note: This is a conceptual prototype dashboard for illustrative purposes only. "
-    "The Boltzmann activation curve and table thresholds are simplified representations "
-    "intended to demonstrate the proposed bioelectric-to-epigenetic signaling concept."
+    "The Boltzmann activation curve, state zones, and table thresholds are simplified representations "
+    "intended to organize and communicate a proposed bioelectric-to-epigenetic signaling concept, "
+    "not validated experimental results."
 )
